@@ -50,15 +50,7 @@ public class Main {
 			
 			switch(option) {
 			case 1:
-				try {
-					try {
-						ppal.signInUser();
-					} catch (DayAndIdException e) {
-						System.out.println("El usuario no le corresponde ingresar hoy");
-					}
-				} catch (NoTIException e) {
-					System.out.println("El tipo de documento no puede ser TI\n\n");
-				}
+				ppal.signInUser();
 				count++;
 				break;
 			case 2:
@@ -82,7 +74,7 @@ public class Main {
 				+ "Opcion: ";
 	}
 	
-	public void signInUser() throws NoTIException, DayAndIdException {
+	public void signInUser(){
 		
 		System.out.print("Por favor escoge el tipo de documento que posee:\n"
 				+ "( 1 ) Tarjeta de Identidad (TI)\n"
