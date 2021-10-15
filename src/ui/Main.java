@@ -3,7 +3,6 @@ package ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import model.User;
 
 public class Main {
 	
-	private int day;
 	private BufferedReader br;
 	private List<User> usersJoined; 
 	
@@ -22,8 +20,6 @@ public class Main {
 	public Main() {
 		br = new BufferedReader(new InputStreamReader(System.in));
 		usersJoined = new ArrayList<User>();
-		
-		day = LocalDateTime.now().getDayOfMonth();
 	}
 
 	public static void main(String[]juank) {
@@ -105,60 +101,58 @@ public class Main {
 			}
 		} while(line.equals(""));
 		
-		if(Integer.parseInt(line) == 1) {
-			throw new NoTIException();
-		} else {
-			int option = Integer.parseInt(line);
-			TD type = null;
-			boolean accept = false;
-			
-			switch(option) {
-			case 1:
-				type = TD.CC;
-				accept = true;
-				break;
-			case 2:
-				type = TD.PP;
-				accept = true;
-				break;
-			case 3:
-				type = TD.CE;
-				accept = true;
-				break;
-			}
-			
-			if(accept) {
-				String id = "";
-				do {
-					System.out.print("Ingrese el numero de documento de Identidad: ");
-					
-					try {
-						id = readALine();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} while(id.equals(""));
-				
-				User u = new User(type, id);
-				
-				if(day%2 == 0 && u.getPenultimate()%2 != 0) {
-					
-					usersJoined.add(u);
-					System.out.println("El usuario ha podido ingresar correctamente");
-					
-				} else if(day%2 != 0 && u.getPenultimate()%2 == 0) {
-					
-					usersJoined.add(u);
-					System.out.println("El usuario ha podido ingresar correctamente");
-					
-				} else {
-					throw new DayAndIdException();
-				}
-				
-			} else {
-				System.out.println("Ingresa una opcion valida");
-			}
+		int o = Integer.parseInt(line);
+		TD type = null;
+		
+		switch(o) {
+		case 1:
+			type = TD.TI;
+			break;
+		case 2:
+			type = TD.CC;
+			break;
+		case 3:
+			type = TD.PP;
+			break;
+		case 4:
+			type = TD.CE;
+			break;
 		}
+		
+		
+		String id = "";
+		do {
+			System.out.print("Ingrese el numero de documento de Identidad: ");
+			
+			try {
+				id = readALine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} while(id.equals(""));
+		
+		User us = null;
+		try {
+			us = new User(type, id);
+		} catch(NoTIException e) {
+			System.out.println("\n===========================================\n"
+					+ "No se acepta tarjeta de identidad como documento valido"
+					+ "\n===========================================\n");
+		}
+		
+		if(us != null) {
+			try {
+				us.CanSignIn();
+				usersJoined.add(us);
+				System.out.println("\n===========================================\n"
+						+ "El usuario ha ingresado correctamente al mini mercado"
+						+ "\n===========================================\n");
+			} catch(DayAndIdException e) {
+				System.out.println("\n===========================================\n"
+						+ "El usuario ingresado no le corresponde ingresar hoy"
+						+ "\n===========================================");
+			}
+		}	
 	}
 	
 	public String readALine() throws IOException {
