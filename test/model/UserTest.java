@@ -2,13 +2,16 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
 import exceptions.DayAndIdException;
 import exceptions.NoTIException;
 
 class UserTest {
 	
-	User u = null;
+	private int day = LocalDateTime.now().getDayOfMonth();
+	private User u = null;
 
 	public void setupScenary1(TD t, String n) {
 		try {
@@ -43,21 +46,36 @@ class UserTest {
 	@Test
 	public void testUser() {
 		
-		setupScenary1(TD.CC, "123456");
+		TD type = TD.CC;
+		String id = "123456";
+		
+		setupScenary1(type, id);
 		
 	}
 	
 	@Test
 	public void testTIException() {
 		
-		setupScenary2(TD.TI, "123456");
+		TD type = TD.TI;
+		String id = "123456";
+		
+		setupScenary2(type, id);
 		
 	}
 	
 	@Test
 	public void testDayAndIdException() {
 		
-		setupScenary3(TD.CC, "123456");
+		TD type = TD.CC;
+		String id = "";
+		
+		if(day%2 == 0) {
+			id = "1234567";
+		} else {
+			id = "123456";
+		}
+		
+		setupScenary3(type, id);
 		
 	}
 
