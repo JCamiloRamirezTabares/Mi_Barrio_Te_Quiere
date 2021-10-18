@@ -10,11 +10,13 @@ public class User {
 	private TD typeD;
 	private String in;
 	
-	private int day = LocalDateTime.now().getDayOfMonth();;
+	private int day = LocalDateTime.now().getDayOfMonth();
 	
 	//Constructor
 	public User(TD typeD, String in) throws NoTIException {
 		if(typeD == TD.TI) {
+			this.typeD = typeD;
+			this.in = in;
 			throw new NoTIException();
 		} else {
 			this.typeD = typeD;

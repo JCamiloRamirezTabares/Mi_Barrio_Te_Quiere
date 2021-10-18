@@ -3,23 +3,18 @@ package ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import exceptions.DayAndIdException;
-import exceptions.NoTIException;
+import model.Market;
 import model.TD;
-import model.User;
 
 public class Main {
 	
 	private BufferedReader br;
-	private List<User> usersJoined; 
+	private Market miniMarket;
 	
 	//Constructor
 	public Main() {
 		br = new BufferedReader(new InputStreamReader(System.in));
-		usersJoined = new ArrayList<User>();
+		miniMarket = new Market();
 	}
 
 	public static void main(String[]juank) {
@@ -31,38 +26,12 @@ public class Main {
 				+ "===========  Mini-Mercado  ===========\n"
 				+ "======================================\n\n");
 		
-		int count = 0;
 		int option = -1;
 		do {
-			String line = "";
-			
-			do {
-				System.out.print(ppal.Menu());
-				
-				try {
-					line = ppal.readALine();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} while(line.equals(""));
-			
-			option = Integer.parseInt(line);
-			
-			switch(option) {
-			case 1:
-				ppal.signInUser();
-				count++;
-				break;
-			case 2:
-				System.out.println("Actualmente han intentado ingresar " + count + " personas al mini mercado\n");
-				break;
-			case 3:
-				option = 0;
-				System.out.println("Hasta la proxima :D");
-				break;
-			}
-			
+			option = ppal.evaluateOption();
 		} while(option != 0);
+		
+		System.out.println("Hasta la proxima nun");
 		
 	}
 	
@@ -72,6 +41,37 @@ public class Main {
 				+ "( 2 ) Para mostrar el numero de personas que han intentado ingresar\n"
 				+ "( 3 ) Para salir del programa\n\n"
 				+ "Opcion: ";
+	}
+	
+	public int evaluateOption() {
+		String line = "";
+		int option = -1;
+		
+		do {
+			System.out.print(Menu());
+			
+			try {
+				line = readALine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} while(line.equals(""));
+		
+		option = Integer.parseInt(line);
+		
+		switch(option) {
+		case 1:
+			signInUser();
+			break;
+		case 2:
+			System.out.println("Actualmente han intentado ingresar " + miniMarket.getCount() + " personas al mini mercado\n");
+			break;
+		case 3:
+			option = 0;
+			break;
+		}
+		
+		return option;
 	}
 	
 	public void signInUser(){
@@ -123,29 +123,10 @@ public class Main {
 			}
 		} while(id.equals(""));
 		
-		User us = null;
-		try {
-			us = new User(type, id);
-		} catch(NoTIException e) {
-			System.out.println("\n===========================================\n"
-					+ "No se acepta tarjeta de identidad como documento valido"
-					+ "\n===========================================\n");
-		}
-		
-		if(us != null) {
-			try {
-				us.CanSignIn();
-				usersJoined.add(us);
-				System.out.println("\n===========================================\n"
-						+ "El usuario ha ingresado correctamente al mini mercado"
-						+ "\n===========================================\n");
-			} catch(DayAndIdException e) {
-				System.out.println("\n===========================================\n"
-						+ "El usuario ingresado no le corresponde ingresar hoy"
-						+ "\n===========================================");
-			}
-		}	
+		System.out.println(miniMarket.SignIn(type, id));	
 	}
+	
+	
 	
 	public String readALine() throws IOException {
 		
